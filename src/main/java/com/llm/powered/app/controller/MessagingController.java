@@ -2,6 +2,7 @@ package com.llm.powered.app.controller;
 
 import com.llm.powered.app.service.LlmChatService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -17,7 +18,7 @@ public class MessagingController {
     }
 
     @GetMapping("/normalchat")
-    public Flux<String> normalChat() {
-        return service.response("Greet me by saying hy");
+    public Flux<String> normalChat(@RequestBody String userPrompt) {
+        return service.response(userPrompt);
     }
 }
