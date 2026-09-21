@@ -42,7 +42,7 @@ public class MessagingController {
             @ApiResponse(responseCode = "500", description = "LLM service error", content = @Content)
     })
     @PostMapping("/normalchat")
-    public Flux<String> normalChat(@RequestBody String userPrompt) {
+    public String normalChat(@RequestBody String userPrompt) {
         return service.response(userPrompt);
     }
 }
