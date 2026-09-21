@@ -34,7 +34,7 @@ public class MessagingController {
                     responseCode = "200",
                     description = "Streamed LLM response",
                     content = @Content(
-                            mediaType = MediaType.TEXT_EVENT_STREAM_VALUE,
+                            mediaType = MediaType.TEXT_PLAIN_VALUE,
                             schema = @Schema(type = "string")
                     )
             ),
