@@ -10,8 +10,18 @@ public class LoggingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "LOG_TYPE")
     private String logType;
+    @Column(name = "LOG_SUMMARY")
     private String logSummary;
+
+    public LoggingEntity() {
+    }
+
+    public LoggingEntity(String logType, String logSummary) {
+        this.logType = logType;
+        this.logSummary = logSummary;
+    }
 
     public Long getId() {
         return id;
@@ -35,5 +45,13 @@ public class LoggingEntity {
 
     public void setLogSummary(String logSummary) {
         this.logSummary = logSummary;
+    }
+
+    @Override
+    public String toString() {
+        return "LoggingEntity{" +
+                ", logType='" + logType + '\'' +
+                ", logSummary='" + logSummary + '\'' +
+                '}';
     }
 }
