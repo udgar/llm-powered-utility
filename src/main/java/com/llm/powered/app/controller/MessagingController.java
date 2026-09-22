@@ -32,7 +32,7 @@ public class MessagingController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Streamed LLM response",
+                    description = "PROVIDE LLM Response regarding financial message",
                     content = @Content(
                             mediaType = MediaType.TEXT_PLAIN_VALUE,
                             schema = @Schema(type = "string")
@@ -41,7 +41,7 @@ public class MessagingController {
             @ApiResponse(responseCode = "400", description = "Missing or empty prompt", content = @Content),
             @ApiResponse(responseCode = "500", description = "LLM service error", content = @Content)
     })
-    @PostMapping("/normalchat")
+    @PostMapping("/financeChat")
     public String normalChat(@RequestBody String userPrompt) {
         return service.response(userPrompt);
     }

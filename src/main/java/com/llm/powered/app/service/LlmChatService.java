@@ -1,5 +1,6 @@
 package com.llm.powered.app.service;
 
+import com.llm.powered.app.model.LoggingDto;
 import com.llm.powered.app.tool.LoggingTools;
 import com.openai.errors.BadRequestException;
 import com.openai.errors.OpenAIInvalidDataException;
@@ -16,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class LlmChatService {
 
-    private Logger LOG = LoggerFactory.getLogger(LlmChatService.class);
+    private final Logger LOG = LoggerFactory.getLogger(LlmChatService.class);
 
     private final ChatClient chatClient;
     private final String SYSTEM_PROMPT;
@@ -30,24 +31,22 @@ public class LlmChatService {
     }
 
     public String response(String prompt) {
-        String response = chatClient.prompt().system(SYSTEM_PROMPT).user(prompt).call().content();
-        assert response != null;
         try {
-            String toolsResponse = chatClient.prompt().system(systemPrompt()).user(response).tools(loggingTools).call().content();
-            LOG.info("The LLM response was persisted to db " + toolsResponse);
+            LoggingDto response = chatClient.prompt().system(SYSTEM_PROMPT).user(prompt).call().entity(LoggingDto.class);
+            if (response != null) {
+                loggingTools.loggingTool(response);
+                LOG.info("Response from LLM successfully logged" + response);
+                return String.format("%s \n %s", response.getSummary(), response.getDetails());
+            } else {
+                LOG.error("Null response was propagated through LLM");
+                throw new RuntimeException("Null response was propagated through LLM");
+            }
         } catch (BadRequestException e) {
             LOG.error("status={} body={}", e.statusCode(), e.body(), e);
         } catch (OpenAIInvalidDataException e) {
             LOG.error("body={}", e.getMessage(), e);
         }
-        return response;
-    }
-
-    private String systemPrompt() {
-        return """
-                From the given response from LLM create a generate a log type,for example success, server error,too many request error.
-                And one line summary of the response, , for example message summary was returned to the user, there was error while processing user requests, too many requests were encountered.
-                """;
+        return "Client/Server Error Encountered";
     }
 
     private String systemPrompt(Resource promptResource) throws IOException {
